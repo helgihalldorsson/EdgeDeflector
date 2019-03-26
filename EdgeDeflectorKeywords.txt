@@ -1,0 +1,12 @@
+# Use the 'default' key to replace bing with a search engine of your choice. Ignore it if you wish to use bing.
+#default=https://www.google.com/search?q=*
+#default=https://duckduckgo.com/?q=*
+
+w=https://en.wikipedia.org/wiki/Special:Search?search=*
+g=https://www.google.com/search?q=*
+a=https://www.amazon.com/exec/obidos/external-search/?field-keywords=*
+t=https://translate.google.com/?q=*
+m=https://www.wolframalpha.com/input/?i=*
+
+# You can also add custom redirects. For example:
+#gh=https://www.github.com
