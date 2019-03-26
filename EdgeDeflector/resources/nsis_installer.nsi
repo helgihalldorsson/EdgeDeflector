@@ -37,7 +37,8 @@ Section "Installer"
   SetOutPath $INSTDIR
 
   ; Put file there
-  File ..\bin\Release\EdgeDeflector.exe
+  File ..\bin\Release\EdgeDeflector.exe  
+  File ..\bin\Release\EdgeDeflectorKeywords.txt
 
   ; Self-registeres to the registry
   ExecWait '$INSTDIR\${PRODUCT}.exe'
@@ -67,6 +68,7 @@ Section "Uninstall"
 
   ; Remove files and uninstaller
   Delete $INSTDIR\${PRODUCT}.exe
+  Delete $INSTDIR\EdgeDeflectorKeywords.txt
   Delete $INSTDIR\${PRODUCT}_uninstall.exe
 
 SectionEnd

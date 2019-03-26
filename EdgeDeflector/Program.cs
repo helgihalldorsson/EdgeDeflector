@@ -6,8 +6,11 @@
 
 using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 using System.Security.Principal;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -144,12 +147,12 @@ namespace EdgeDeflector
 
             Regex rgx = new Regex(msedge_protocol_pattern);
             string new_uri = rgx.Replace(uri, string.Empty);
-
+            
             if (IsHttpUri(new_uri))
             {
                 return new_uri;
             }
-
+            
             // May be new-style Cortana URI - try and split out
             if (IsNonAuthoritativeWithUrlQueryParameter(uri))
             {
@@ -162,8 +165,95 @@ namespace EdgeDeflector
             }
 
             // defer fallback to web browser
-            return "http://" + new_uri;
+            return "https://" + new_uri;
         }
+
+        static Dictionary<string, string> ReadKeywordFile()
+        {
+            string filePath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\EdgeDeflectorKeywords.txt";
+            if (!File.Exists(filePath))
+            {
+                return null;
+            }
+
+            Dictionary<string, string> dictionary = new Dictionary<string, string>();
+            using (StreamReader sr = new StreamReader(filePath))
+            {
+                string _line;
+                while ((_line = sr.ReadLine()) != null)
+                {
+                    if (_line.StartsWith("#"))
+                    {
+                        continue;
+                    }
+                    string[] keyvalue = _line.Split(new char[] { '=' }, 2);
+                    if (keyvalue.Length == 2)
+                    {
+                        dictionary.Add(keyvalue[0].Trim(), keyvalue[1].Trim());
+                    }
+                }
+            }
+
+            return dictionary;
+        }
+                
+        static string ReplaceKeywordsInURI(string uri)
+        {
+            if (!uri.StartsWith("https://www.bing.com/search?q="))
+            {
+                return uri;
+            }
+
+            Dictionary<string, string> keywords = ReadKeywordFile();
+            if (keywords == null)
+            {
+                return uri;
+            }
+
+            NameValueCollection queryCollection = HttpUtility.ParseQueryString(uri);
+            string query = queryCollection["https://www.bing.com/search?q"];
+            if(query == null)
+            {
+                if(keywords.ContainsKey("default"))
+                {
+                    return keywords["default"];
+                }
+                else
+                {
+                    return uri;
+                }
+            }
+            
+            List<string> queryParts = new List<string> (query.Split(' '));
+            string queryKey = queryParts[0];
+
+            if (!keywords.ContainsKey(queryKey))
+            {
+                if (queryKey.StartsWith("r/"))
+                {
+                    return "https://www.reddit.com/" + queryKey;
+                }
+                else if (keywords.ContainsKey("default"))
+                {
+                    return keywords["default"].Replace("*", query.Replace(" ", "+"));
+                }
+                else
+                {
+                    return uri;
+                }
+            }
+
+            string new_uri = keywords[queryKey];
+
+            if(queryParts.Count == 1)
+            {
+                return new_uri.Replace("*", "");
+            }
+
+            queryParts.Remove(queryKey);
+            return new_uri.Replace("*", string.Join("+", queryParts));
+        }
+
 
         static void OpenUri(string uri)
         {
@@ -186,7 +276,8 @@ namespace EdgeDeflector
             if (args.Length == 1 && IsMsEdgeUri(args[0]))
             {
                 string uri = RewriteMsEdgeUriSchema(args[0]);
-                OpenUri(uri);
+                string modified_uri = ReplaceKeywordsInURI(uri);
+                OpenUri(modified_uri);
             }
 
             // Install when running without argument
