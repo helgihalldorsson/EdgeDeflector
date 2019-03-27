@@ -229,11 +229,12 @@ namespace EdgeDeflector
 
             if (!keywords.ContainsKey(queryKey))
             {
-                if (queryKey.StartsWith("r/"))
+                if (queryKey.StartsWith("r/") && keywords.ContainsKey("reddit"))
                 {
-                    return "https://www.reddit.com/" + queryKey;
+                    return keywords["reddit"].TrimEnd('/') + "/" + queryKey;
                 }
-                else if (keywords.ContainsKey("default"))
+
+                if (keywords.ContainsKey("default"))
                 {
                     return keywords["default"].Replace("*", query.Replace(" ", "+"));
                 }

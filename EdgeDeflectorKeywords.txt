@@ -2,6 +2,10 @@
 #default=https://www.google.com/search?q=*
 #default=https://duckduckgo.com/?q=*
 
+# Comment out to disable reddit redirects.
+reddit=https://old.reddit.com/
+#reddit=https://www.reddit.com/
+
 w=https://en.wikipedia.org/wiki/Special:Search?search=*
 g=https://www.google.com/search?q=*
 a=https://www.amazon.com/exec/obidos/external-search/?field-keywords=*
