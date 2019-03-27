@@ -2,7 +2,7 @@ Visit the [original page](https://github.com/da2x/EdgeDeflector) for more detail
 
 # EdgeDeflector
 
-This is a fork of [Daniel's EdgeDeflector](https://github.com/da2x/EdgeDeflector) which allows you to choose a search engine, by setting one as default and/or using keywords. To set the keys, modify the text file EdgeDeflectorKeywords.txt found in the program directory. By default, bing is kept as the search engine, and the keywords "w", "g", "a", "t" and "m" redirect the search to the search engines on Wikipedia, Google, Amazon.com, Google Translate and Wolfram Alpha respectively. An example: "w Normal distribution" would open the Normal distribution page on Wikipedia directly. This version also redirects all searches that start with "r/" to reddit. 
+This is a fork of [Daniel's EdgeDeflector](https://github.com/da2x/EdgeDeflector) which allows you to choose a search engine, by setting one as default and/or using keywords. To set the keys, modify the text file EdgeDeflectorKeywords.txt found in the program directory. By default, bing is kept as the search engine, and the keywords "w", "g", "a", "t" and "m" redirect the search to the search engines on Wikipedia, Google, Amazon.com, Google Translate and Wolfram Alpha respectively. An example: "w Normal distribution" would open the Normal distribution page on Wikipedia directly. This version also redirects all searches that start with "r/" to either the old or new reddit if the keyword 'reddit' is set. 
 
 # Installation
 
